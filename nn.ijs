@@ -21,6 +21,7 @@ b2 =: 32 $ 0
 w3 =: weight_mat 1 32
 b3 =: 1 $ 0
 
+NB. forward input_matrix => output_matrix
 forward =: 3 : 0
 inputs =: y
 out_w1 =: w1 matmul_fw inputs
@@ -36,10 +37,10 @@ out_b3 =: b3 bias_fw out_w3
 out_b3
 )
 
-NB. targets forward_loss inputs
+NB. targets forward_loss inputs => mean_loss
 forward_loss =: 4 : 0
 deltas =: (forward y) - x
-(+/ % #) (0.5 * *: deltas)
+(+/"1 % #"1) (0.5 * *: deltas)
 )
 
 NB. gradient_step stepsize
