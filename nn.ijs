@@ -69,7 +69,7 @@ inputs =. ((? (1 , y) $ 0) - 0.5) * 10
 outputs =. 1 o. inputs
 loss =. outputs forward_loss inputs
 gradient_step 0.0001
-(+/"1 % #) loss
+loss
 )
 
 NB. e.g. run_train 10000
