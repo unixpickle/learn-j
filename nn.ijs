@@ -35,19 +35,7 @@ out_b3
 
 NB. targets f inputs
 forward_loss =: 4 : 0
-NB. TODO: wtf doesn't calling forward here work?
-inputs =: y
-out_w1 =: w1 matmul_fw inputs
-out_b1 =: b1 bias_fw out_w1
-out_r1 =: relu_fw out_b1
-
-out_w2 =: w2 matmul_fw out_r1
-out_b2 =: b2 bias_fw out_w2
-out_r2 =: relu_fw out_b2
-
-out_w3 =: w3 matmul_fw out_r2
-out_b3 =: b3 bias_fw out_w3
-deltas =: out_b3 - x
+deltas =: (forward y) - x
 (+/ % #) (0.5 * *: deltas)
 )
 
