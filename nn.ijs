@@ -1,4 +1,5 @@
-NB. mini-batches are stored wih one sample per column.
+NB. train a small neural network on the sin() function.
+NB. mini-batches are stored in column-major order.
 
 relu_fw =: 0 >. ]
 relu_bw =: (0 <: [) * ] NB. inputs f downstream
@@ -11,11 +12,13 @@ bias_fw =: + NB. params f inputs
 bias_bw_params =: +/"1 NB. f downstream
 bias_bw_inputs =: ] NB. f downstream
 
-w1 =: (? 32 1 $ 0) % 10.0
+weight_mat =: (0.1&*) @ (_0.5&+) @ ? @ ([ $ 0"_)
+
+w1 =: weight_mat 32 1
 b1 =: 32 $ 0
-w2 =: (? 32 32 $ 0) % 10.0
+w2 =: weight_mat 32 32
 b2 =: 32 $ 0
-w3 =: (? 1 32 $ 0) % 10.0
+w3 =: weight_mat 1 32
 b3 =: 1 $ 0
 
 forward =: 3 : 0
@@ -33,13 +36,13 @@ out_b3 =: b3 bias_fw out_w3
 out_b3
 )
 
-NB. targets f inputs
+NB. targets forward_loss inputs
 forward_loss =: 4 : 0
 deltas =: (forward y) - x
 (+/ % #) (0.5 * *: deltas)
 )
 
-NB. f stepsize
+NB. gradient_step stepsize
 gradient_step =: 3 : 0
 grad1 =. deltas
 b3 =: b3 - (bias_bw_params grad1) * y
@@ -59,21 +62,22 @@ grad2 =. bias_bw_inputs grad1
 w1 =: w1 - (inputs matmul_bw_params grad2) * y
 )
 
+NB. iteration batch_size
 iteration =: 3 : 0
-NB. TODO: figure out how to take batch size as an argument.
-inputs =. ((? 1 128 $ 0) - 0.5) * y
+inputs =. ((? (1 , y) $ 0) - 0.5) * 10
 outputs =. 1 o. inputs
 loss =. outputs forward_loss inputs
-gradient_step 0.001
+gradient_step 0.0001
 (+/"1 % #) loss
 )
 
-NB. run_train num_iters
+NB. e.g. run_train 10000
 run_train =: 3 : 0
-for. i. y do. iteration 10 end.
-echo 'final loss' ; iteration 10
+for. i. y do. iteration 128 end.
+echo 'final loss' ; iteration 4096
 )
 
+NB. plot_outputs 0
 plot_outputs =: 3 : 0
 inputs =. ((i. 1 1000) - 500) % 100
 outputs =. forward inputs
